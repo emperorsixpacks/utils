@@ -6,7 +6,6 @@ from .models import(
     SearchResult,
     Credits,
     return_credits,
-    getMoviefromDB
 )
 
 from .tmdb_api_wrapper import(

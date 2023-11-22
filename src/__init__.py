@@ -5,7 +5,6 @@ from .utils.models import(
     Scrapper,
     SearchResult,
     Credits,
-    Reviews,
     return_credits
 )
 

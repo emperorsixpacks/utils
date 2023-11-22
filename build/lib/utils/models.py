@@ -90,20 +90,6 @@ class Title:
 
 
 
-def getMoviefromDB(title: Title, tmdb_id, database):
-    query = {"title": title.title, "tmdb_id": tmdb_id}
-
-    movies = database.find(query)
-    if movies:
-        for movie in movies:
-            for key, value in movie.items():
-                if hasattr(Movie, key):
-                    setattr(Movie, key, value)
-            return Movie
-    return None
-
-
-
 @dataclass()
 class MovieDetail:
     id: str = field(default=None)
