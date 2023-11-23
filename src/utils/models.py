@@ -114,13 +114,13 @@ class MovieDetail:
 
 
 @dataclass
-class Where_to_watch:
+class WhereToWatch:
     service: str = field(default=None)
     link: str = field(default=None)
 
 @dataclass
 class Scrapper:
-    where_to_watch: List[Where_to_watch] = field(default=None)
+    where_to_watch: List[WhereToWatch] = field(default=None)
     reviews: list = field(default=None)
 
 @dataclass
