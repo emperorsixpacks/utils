@@ -5,7 +5,6 @@ from pydantic import BaseModel, Field
 from fastapi.encoders import jsonable_encoder
 from dataclasses import dataclass, field
 from typing import List
-import math
 import numpy as np
 
 
@@ -37,25 +36,46 @@ class PyObjectID(ObjectId):
     def __get_pydantic_json_schema__(cls, field_schema):
         field_schema.upper(type="string")
 
+@dataclass(init=False)
+class Credits:
+    name: str = field(default=None)
+    character: str = field(default=None)
+    original_name: str = field(default=None)
+    known_for_department: str = field(default=None)
 
+    def __call__(self, *args, **kwargs):
+        pass
+
+
+
+@dataclass
+class WhereToWatch:
+    service: str = field(default=None)
+    link: str = field(default=None)
+
+@dataclass
+class Sentiments:
+    sentiement: str
+    percentage: int
+    
 class Movie(BaseModel):
-    id: PyObjectID = Field(default_factory=PyObjectID, alias="_id")
+    id: PyObjectID = Field(default_factory=PyObjectID, alias="_id", init_var=False)
     title: str = Field(default=None)
     slug: str = Field(default=None)
     original_title: str = Field(default=None)
     genres: list = Field(default=None)
-    cast: list = Field(default=None)
-    crew: list = Field(default=None)
+    cast: List[Credits] = field(default=None)
+    crew: List[Credits] = field(default=None)
     tmdb_id: int = Field(default=None)
     imdb_id: str = Field(default=None)
     overview: str = Field(default=None)
     summary: str = Field(default=None)
-    reviews: list = Field(default=None)
+    reviews: List[str] = Field(default=None)
     popularity: float = Field(default=None)
     runtime: int = Field(default=None)
     movie_location: str = Field(default=None)
-    where_to_watch: list = Field(default=None)
-    sentiment: list = Field(default=None)
+    where_to_watch: List[WhereToWatch] = Field(default=None)
+    sentiment: List[Sentiments] = Field(default=None)
     release_date: str = Field(default=None)
     original_language: str = Field(default=None)
     poster_path: str = Field(default=None)
@@ -89,7 +109,6 @@ class Title:
         self._title = remove_punctuation_except_hyphen(_filtered_title)
 
 
-
 @dataclass()
 class MovieDetail:
     id: str = field(default=None)
@@ -97,26 +116,22 @@ class MovieDetail:
     sentiment: list = field(default=None)
     overview: str = Field(default=None)
     genres: list = field(default=None)
-    cast: list = field(default=None)
-    crew: list = field(default=None)
-    tmdb_id: int = field(default=None)
+    cast: List[Credits] = field(default=None)
+    crew: List[Credits] = field(default=None)
     imdb_id: str = field(default=None)
     popularity: float = field(default=None)
     poster_path: str = field(default=None)
-    where_to_watch: list = field(default=None)
+    where_to_watch: List[WhereToWatch] = field(default=None)
     original_title: str = field(default=None)
     original_language: str = field(default=None)
     runtime: int = field(default=None)
     release_date: str = field(default=None)
     summary: str = field(default=None)
     
-
-
-
-@dataclass
-class WhereToWatch:
-    service: str = field(default=None)
-    link: str = field(default=None)
+    
+    def __post_init__(self):
+        self.tmdb_id = self.id
+    
 
 @dataclass
 class Scrapper:
@@ -152,28 +167,11 @@ class SearchResult:
 
 
 
-@dataclass(init=False)
-class Credits:
-    name: str = field(default=None)
-    character: str = field(default=None)
-    original_name: str = field(default=None)
-    known_for_department: str = field(default=None)
-
-    def __call__(self, *args, **kwargs):
-        pass
 
 
 def return_credits(result: dict)->list:
-    cast_list = []
-    crew_list = []
-    credit = {
-            "name":str,
-            "character": str,
-            "original_name": str,
-            "known_for_department": str,
-        }
-    cast_list  = [{key:value for key, value in cast.items() if key in credit} for cast in result["cast"]]
-    crew_list  = [{key:value for key, value in cast.items() if key in credit} for cast in result["crew"]]
+    cast_list  = [Credits(**{key:value for key, value in vars(cast).items() if hasattr(Credits, key)}) for cast in result["cast"]]
+    crew_list  = [Credits(**{key:value for key, value in vars(cast).items() if hasattr(Credits, key)}) for cast in result["crew"]]
     
     return cast_list, crew_list
 

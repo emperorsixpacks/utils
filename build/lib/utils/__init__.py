@@ -6,6 +6,8 @@ from .models import(
     SearchResult,
     Credits,
     return_credits,
+    WhereToWatch,
+    Sentiments
 )
 
 from .tmdb_api_wrapper import(
