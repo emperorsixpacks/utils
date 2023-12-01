@@ -48,6 +48,7 @@ class TMDBWrapper:
         movie = MovieDetail(**{field:value for field, value in result.items() if field in vars(MovieDetail)})
         movie.cast = cast
         movie.crew = crew
+        movie.tmdb_id = result["id"]
         return movie
 
     def get_credits(self, tmdb_id:int):

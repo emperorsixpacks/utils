@@ -4,7 +4,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="utils",
-    version="0.0.7",
+    version="0.0.9",
     description="This is a package that contains some utilits that may be needed in some of my services",
     package_dir={"":"src"},
     author="emperorsixpacks",

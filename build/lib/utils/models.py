@@ -59,7 +59,7 @@ class Sentiments:
     percentage: int
     
 class Movie(BaseModel):
-    id: PyObjectID = Field(default_factory=PyObjectID, alias="_id", init_var=False)
+    id: PyObjectID = Field(default_factory=PyObjectID, alias="_id")
     title: str = Field(default=None)
     slug: str = Field(default=None)
     original_title: str = Field(default=None)
@@ -111,7 +111,6 @@ class Title:
 
 @dataclass()
 class MovieDetail:
-    id: str = field(default=None)
     title: str = field(default=None)
     sentiment: list = field(default=None)
     overview: str = Field(default=None)
@@ -129,8 +128,9 @@ class MovieDetail:
     summary: str = field(default=None)
     
     
-    def __post_init__(self):
-        self.tmdb_id = self.id
+    @property
+    def tmdb_id(self):
+        return self.id
     
 
 @dataclass
