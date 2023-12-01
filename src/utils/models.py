@@ -36,7 +36,7 @@ class PyObjectID(ObjectId):
     def __get_pydantic_json_schema__(cls, field_schema):
         field_schema.upper(type="string")
 
-@dataclass(init=False)
+@dataclass
 class Credits:
     name: str = field(default=None)
     character: str = field(default=None)
@@ -118,6 +118,7 @@ class MovieDetail:
     cast: List[Credits] = field(default=None)
     crew: List[Credits] = field(default=None)
     imdb_id: str = field(default=None)
+    tmdb_id: int = field(default=None)
     popularity: float = field(default=None)
     poster_path: str = field(default=None)
     where_to_watch: List[WhereToWatch] = field(default=None)
@@ -127,10 +128,6 @@ class MovieDetail:
     release_date: str = field(default=None)
     summary: str = field(default=None)
     
-    
-    @property
-    def tmdb_id(self):
-        return self.id
     
 
 @dataclass
@@ -170,8 +167,8 @@ class SearchResult:
 
 
 def return_credits(result: dict)->list:
-    cast_list  = [Credits(**{key:value for key, value in vars(cast).items() if hasattr(Credits, key)}) for cast in result["cast"]]
-    crew_list  = [Credits(**{key:value for key, value in vars(cast).items() if hasattr(Credits, key)}) for cast in result["crew"]]
+    cast_list  = [Credits(**{key:value for key, value in cast.items() if hasattr(Credits, key)}) for cast in result["cast"]]
+    crew_list  = [Credits(**{key:value for key, value in cast.items() if hasattr(Credits, key)}) for cast in result["crew"]]
     
     return cast_list, crew_list
 
